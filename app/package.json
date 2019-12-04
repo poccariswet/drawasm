@@ -1,0 +1,22 @@
+{
+  "name": "drawing-wasm-web",
+  "version": "0.1.0",
+  "description": "drawing-wasm-web",
+  "main": "index.js",
+  "bin": {
+    "create-wasm-app": ".bin/create-wasm-app.js"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "dev": "webpack-dev-server"
+  },
+  "devDependencies": {
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5",
+    "copy-webpack-plugin": "^5.0.0"
+  },
+  "dependencies": {
+    "drawing-wasm": "file:../pkg"
+  }
+}
