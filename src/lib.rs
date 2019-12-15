@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{window, Element, HtmlCanvasElement, HtmlElement};
 
+mod draw;
 mod utils;
 
 #[cfg(feature = "wee_alloc")]
@@ -47,6 +48,8 @@ pub fn run() -> Result<(), JsValue> {
         .unwrap();
     canvas.set_width(w - pre_w);
     canvas.set_height(h - bar_h);
+
+    draw::canvas_draw_start(&canvas)?;
 
     Ok(())
 }
