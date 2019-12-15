@@ -3,9 +3,49 @@
   <head>
     <meta charset="utf-8">
     <title>drawing</title>
+    <style>
+      html, body {height: 100%; margin: 0;}
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      #toolbar {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          justify-content: flex-start;
+          align-items: baseline;
+
+          width: 100%;
+          border-top: 1px solid #efefef;
+          border-bottom: 1px solid #efefef;
+      }
+      .app {
+        display: flex;
+        flex-direction: row;
+      }
+      #draw-area {
+        width: 80%;
+      }
+      #preview {
+        width: 20%;
+      }
+    </style>
   </head>
   <body>
     <script src="./static.js"></script>
-    <h1>drawing wasm</h1>
+
+    <div id="toolbar">
+      <div style="height: 50px; width:50px; border-left: 1px solid #efefef; display: flex; flex-direction: row; justify-content: flex-start; background-color: #aaaaaa;"></div>
+      <div style="height: 50px; width:50px; border-left: 1px solid #efefef; display: flex; flex-direction: row; justify-content: flex-start; background-color: #abcabc;"></div>
+    </div>
+
+    <div class="app">
+      <div id="draw-area">
+        <canvas id="draw"></canvas>
+      </div>
+
+      <div id="preview"></div>
+    </div>
   </body>
 </html>

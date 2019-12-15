@@ -20,5 +20,15 @@ wee_alloc = { version = "0.4.2", optional = true }
 [dev-dependencies]
 wasm-bindgen-test = "0.2"
 
-[profile.release]
-opt-level = "s"
+[dependencies.web-sys]
+version = "0.3.4"
+features = [
+  'Document',
+  'Element',
+  'Window',
+  'Node',
+  'HtmlElement',
+  'HtmlCanvasElement',
+  'CanvasRenderingContext2d',
+  'MouseEvent',
+]
