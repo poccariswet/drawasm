@@ -1,4 +1,6 @@
+use std::cell::Cell;
 use std::f64;
+use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, MouseEvent};
@@ -51,43 +53,44 @@ pub fn canvas_draw_start(canvas: &HtmlCanvasElement) -> Result<(), JsValue> {
         .unwrap()
         .dyn_into::<CanvasRenderingContext2d>()
         .unwrap();
+    let pressed = Rc::new(Cell::new(false));
 
     {
         let context_copy = context.clone();
         let canvas_copy = canvas.clone();
-        let handle_mouse_down = Closure::wrap(Box::new(move |event: MouseEvent| {
+        let pressed = pressed.clone();
+        let mouse_down = Closure::wrap(Box::new(move |event: MouseEvent| {
             let new_x = event.offset_x() as f64;
             let new_y = event.offset_y() as f64;
             context_copy.begin_path();
             context_copy.set_stroke_style(&JsValue::from("#000000"));
             context_copy.set_line_width(1.0);
             context_copy.move_to(new_x, new_y);
+            pressed.set(true);
         }) as Box<dyn FnMut(_)>);
 
-        canvas.add_event_listener_with_callback(
-            "mousedown",
-            handle_mouse_down.as_ref().unchecked_ref(),
-        )?;
+        canvas
+            .add_event_listener_with_callback("mousedown", mouse_down.as_ref().unchecked_ref())?;
 
-        handle_mouse_down.forget();
+        mouse_down.forget();
     }
 
     {
-        let handle_mouse_up =
-            Closure::wrap(Box::new(move |event: MouseEvent| {}) as Box<dyn FnMut(_)>);
+        let pressed = pressed.clone();
+        let mouse_up = Closure::wrap(Box::new(move |event: MouseEvent| {
+            pressed.set(false);
+        }) as Box<dyn FnMut(_)>);
 
-        canvas.add_event_listener_with_callback(
-            "mouseup",
-            handle_mouse_up.as_ref().unchecked_ref(),
-        )?;
+        canvas.add_event_listener_with_callback("mouseup", mouse_up.as_ref().unchecked_ref())?;
 
-        handle_mouse_up.forget();
+        mouse_up.forget();
     }
 
     {
         let context_copy = context.clone();
-        let handle_mouse_move = Closure::wrap(Box::new(move |event: MouseEvent| {
-            if true {
+        let pressed = pressed.clone();
+        let mouse_move = Closure::wrap(Box::new(move |event: MouseEvent| {
+            if pressed.get() {
                 let new_x = event.offset_x() as f64;
                 let new_y = event.offset_y() as f64;
                 context_copy.line_to(new_x, new_y);
@@ -95,12 +98,10 @@ pub fn canvas_draw_start(canvas: &HtmlCanvasElement) -> Result<(), JsValue> {
             }
         }) as Box<dyn FnMut(_)>);
 
-        canvas.add_event_listener_with_callback(
-            "mousemove",
-            handle_mouse_move.as_ref().unchecked_ref(),
-        )?;
+        canvas
+            .add_event_listener_with_callback("mousemove", mouse_move.as_ref().unchecked_ref())?;
 
-        handle_mouse_move.forget();
+        mouse_move.forget();
     }
 
     Ok(())
