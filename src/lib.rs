@@ -3,6 +3,7 @@ use wasm_bindgen::JsCast;
 use web_sys::{window, Element, HtmlCanvasElement, HtmlElement};
 
 mod draw;
+mod state;
 mod utils;
 
 #[cfg(feature = "wee_alloc")]
