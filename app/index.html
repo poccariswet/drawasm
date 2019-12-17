@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>drawing</title>
     <style>
-      html, body {height: 100%; margin: 0;}
-      body {
+      html, body {height: 100%; width:100%; margin: 0;}
+      .app {
         display: flex;
         flex-direction: column;
       }
@@ -17,35 +17,37 @@
           align-items: baseline;
 
           width: 100%;
-          border-top: 1px solid #efefef;
           border-bottom: 1px solid #efefef;
       }
-      .app {
+      .canvas {
         display: flex;
         flex-direction: row;
+        min-height: 100%;
       }
       #draw-area {
-        width: 80%;
+        min-height: 100%;
       }
       #preview {
         width: 20%;
+        min-height: 100%;
       }
     </style>
   </head>
   <body>
     <script src="./static.js"></script>
-
-    <div id="toolbar">
-      <div style="height: 50px; width:50px; border-left: 1px solid #efefef; background-color: #aaaaaa;"></div>
-      <div style="height: 50px; width:50px; border-left: 1px solid #efefef; background-color: #abcabc;"></div>
-    </div>
-
     <div class="app">
-      <div id="draw-area">
-        <canvas id="draw"></canvas>
+      <div id="toolbar">
+        <div style="height: 50px; width:50px;  background-color: #aaaaaa;"></div>
+        <div style="height: 50px; width:50px;  background-color: #abcabc;"></div>
       </div>
 
-      <div id="preview"></div>
+      <div class="canvas">
+        <div id="draw-area">
+          <canvas id="draw"></canvas>
+        </div>
+
+        <div id="preview"></div>
+      </div>
     </div>
   </body>
 </html>
