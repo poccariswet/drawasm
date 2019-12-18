@@ -1,3 +1,5 @@
+use std::cell::RefCell;
+use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{window, Element, HtmlCanvasElement, HtmlElement};
@@ -47,10 +49,18 @@ pub fn run() -> Result<(), JsValue> {
         .dyn_into::<HtmlCanvasElement>()
         .map_err(|_| ())
         .unwrap();
-    canvas.set_width(w - pre_w);
-    canvas.set_height(h - bar_h);
+    canvas.style().set_property("border", "2px solid")?;
 
-    draw::canvas_draw_start(&canvas)?;
+    let canvas_w = w - (pre_w + 4);
+    let canvas_h = h - (bar_h + 4);
+
+    canvas.set_width(canvas_w);
+    canvas.set_height(canvas_h);
+
+    let state: Rc<RefCell<state::State>> =
+        Rc::new(RefCell::new(state::State::new(canvas_w, canvas_h)));
+
+    draw::canvas_draw_start(&canvas, &state)?;
 
     Ok(())
 }
