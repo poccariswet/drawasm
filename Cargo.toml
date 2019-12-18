@@ -32,4 +32,6 @@ features = [
   'CanvasRenderingContext2d',
   'MouseEvent',
   'EventTarget',
+  'CssStyleDeclaration',
+  'ImageData',
 ]
