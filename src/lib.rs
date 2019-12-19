@@ -6,6 +6,7 @@ use web_sys::{window, Element, HtmlCanvasElement, HtmlElement};
 
 mod draw;
 mod state;
+mod toolbar;
 mod utils;
 
 #[cfg(feature = "wee_alloc")]
@@ -61,6 +62,7 @@ pub fn run() -> Result<(), JsValue> {
         Rc::new(RefCell::new(state::State::new(canvas_w, canvas_h)));
 
     draw::canvas_draw_start(&canvas, &state)?;
+    toolbar::init_toolbar(&toolbar, &canvas, &state)?;
 
     Ok(())
 }
