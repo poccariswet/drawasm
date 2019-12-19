@@ -28,6 +28,8 @@ macro_rules! console_log {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 
+static TOOLBAR_HEIGHT: u32 = 50;
+
 #[wasm_bindgen]
 pub fn run() -> Result<(), JsValue> {
     let document = window()
@@ -44,8 +46,7 @@ pub fn run() -> Result<(), JsValue> {
 
     // set canvas, preview dimention
     let (w, h) = get_body_dimensions(&body);
-    let (_, bar_h) = get_el_dimensions(&toolbar);
-    let (pre_w, _) = get_el_dimensions(&preview);
+    let (pre_w, _pre_h) = get_el_dimensions(&preview);
     let canvas: HtmlCanvasElement = canvas
         .dyn_into::<HtmlCanvasElement>()
         .map_err(|_| ())
@@ -53,7 +54,7 @@ pub fn run() -> Result<(), JsValue> {
     canvas.style().set_property("border", "2px solid")?;
 
     let canvas_w = w - (pre_w + 4);
-    let canvas_h = h - (bar_h + 4);
+    let canvas_h = h - (TOOLBAR_HEIGHT + 4);
 
     canvas.set_width(canvas_w);
     canvas.set_height(canvas_h);

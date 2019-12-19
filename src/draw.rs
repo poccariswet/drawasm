@@ -8,7 +8,6 @@ use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, MouseEvent};
 
 use crate::state::State;
 
-/*
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = console)]
@@ -18,7 +17,6 @@ extern "C" {
 macro_rules! console_log {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
-*/
 
 // setup mouse event listener for drawing and start
 pub fn canvas_draw_start(
@@ -36,18 +34,11 @@ pub fn canvas_draw_start(
     // mousedown
     {
         let context_copy = context.clone();
-        let canvas_copy = canvas.clone();
+        // let canvas_copy = canvas.clone();
         let state_copy = state.clone();
         let pressed = pressed.clone();
 
         let mouse_down = Closure::wrap(Box::new(move |event: MouseEvent| {
-            let undo = state_copy.borrow_mut().get_undo();
-            match undo {
-                Some(u) => {
-                    context_copy.put_image_data(&u, 0.0, 0.0);
-                }
-                None => {}
-            }
             pressed.set(true);
             let image_data = context_copy
                 .get_image_data(

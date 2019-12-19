@@ -14,22 +14,16 @@
           flex-direction: row;
           flex-wrap: nowrap;
           justify-content: flex-start;
-          align-items: baseline;
 
-          width: 100%;
-          border-bottom: 1px solid #efefef;
+          height: 100%;
       }
-      .canvas {
+      .app-main {
         display: flex;
         flex-direction: row;
         min-height: 100%;
       }
-      #draw-area {
-        min-height: 100%;
-      }
       #preview {
         width: 20%;
-        min-height: 100%;
       }
     </style>
   </head>
@@ -37,15 +31,13 @@
     <script src="./static.js"></script>
     <div class="app">
       <div id="toolbar">
-        <div style="height: 50px; width:50px;  background-color: #aaaaaa;"></div>
-        <div style="height: 50px; width:50px;  background-color: #abcabc;"></div>
+        <div style="width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #efefef;">
+          <input type="color" />
+        </div>
       </div>
 
-      <div class="canvas">
-        <div id="draw-area">
-          <canvas id="draw"></canvas>
-        </div>
-
+      <div class="app-main">
+        <canvas id="draw"></canvas>
         <div id="preview"></div>
       </div>
     </div>
