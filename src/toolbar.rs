@@ -30,7 +30,7 @@ fn create_undo_element(
     element.set_inner_html("Undo");
     element.set_attribute(
         "style",
-        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #efefef;",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b;",
     );
 
     let context = canvas

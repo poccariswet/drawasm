@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>drawing</title>
+    <link rel="stylesheet" type="text/css" href="./index.css">
     <style>
-      html, body {height: 100%; width:100%; margin: 0;}
+      html, body {height: 100%; width:100%; margin: 0; background-color: #ebebf0}
       .app {
         display: flex;
         flex-direction: column;
@@ -22,8 +23,16 @@
         flex-direction: row;
         min-height: 100%;
       }
+      #draw {
+        background-color: #ffffff;
+        margin: 5px;
+        position:relative;
+        -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
+        -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
+        box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
+      }
       #preview {
-        width: 20%;
+        width: 30%;
       }
     </style>
   </head>
@@ -31,7 +40,7 @@
     <script src="./static.js"></script>
     <div class="app">
       <div id="toolbar">
-        <div style="width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #efefef;">
+        <div style="width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b;">
           <input type="color" />
         </div>
       </div>

@@ -40,8 +40,8 @@ pub fn run() -> Result<(), JsValue> {
     let body = document.body().expect("Could not find `body` element");
     let toolbar = document.get_element_by_id("toolbar").unwrap();
     let preview = document.get_element_by_id("preview").unwrap();
-    preview.set_attribute("style", "background-color:#d0d7db;")?;
-    preview.set_inner_html("preview");
+    //preview.set_attribute("style", "background-color:#d0d7db;")?;
+    //preview.set_inner_html("preview");
     let canvas = document.get_element_by_id("draw").unwrap();
 
     // set canvas, preview dimention
@@ -51,10 +51,9 @@ pub fn run() -> Result<(), JsValue> {
         .dyn_into::<HtmlCanvasElement>()
         .map_err(|_| ())
         .unwrap();
-    canvas.style().set_property("border", "2px solid")?;
 
-    let canvas_w = w - (pre_w + 4);
-    let canvas_h = h - (TOOLBAR_HEIGHT + 4);
+    let canvas_w = w - (pre_w + 5);
+    let canvas_h = h - (TOOLBAR_HEIGHT + 100 + 5);
 
     canvas.set_width(canvas_w);
     canvas.set_height(canvas_h);
