@@ -34,4 +34,6 @@ features = [
   'EventTarget',
   'CssStyleDeclaration',
   'ImageData',
+  'HtmlInputElement',
+  'Event',
 ]

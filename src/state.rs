@@ -21,6 +21,10 @@ impl State {
         self.color.clone() // not implement Copy trait
     }
 
+    pub fn set_color(&mut self, color: String) {
+        self.color = color;
+    }
+
     pub fn get_pen_thin(&self) -> f64 {
         self.pen_thin
     }

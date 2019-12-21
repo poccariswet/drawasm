@@ -8,16 +8,6 @@ use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, MouseEvent};
 
 use crate::state::State;
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(msg: &str);
-}
-
-macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
-
 // setup mouse event listener for drawing and start
 pub fn canvas_draw_start(
     canvas: &HtmlCanvasElement,
@@ -48,9 +38,7 @@ pub fn canvas_draw_start(
                     state_copy.borrow().get_height() as f64,
                 )
                 .unwrap();
-            console_log!("{:?}", image_data);
             state_copy.borrow_mut().add_undo(image_data);
-            //console_log!("{}", canvas_copy.to_data_url().unwrap());
 
             let new_x = event.offset_x() as f64;
             let new_y = event.offset_y() as f64;
