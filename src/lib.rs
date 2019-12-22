@@ -5,6 +5,7 @@ use wasm_bindgen::JsCast;
 use web_sys::{window, Element, HtmlCanvasElement, HtmlElement};
 
 mod draw;
+mod generate;
 mod state;
 mod toolbar;
 mod utils;
@@ -40,7 +41,6 @@ pub fn run() -> Result<(), JsValue> {
     let body = document.body().expect("Could not find `body` element");
     let toolbar = document.get_element_by_id("toolbar").unwrap();
     let preview = document.get_element_by_id("preview").unwrap();
-    //preview.set_attribute("style", "background-color:#d0d7db;")?;
     //preview.set_inner_html("preview");
     let canvas = document.get_element_by_id("draw").unwrap();
 
@@ -63,6 +63,7 @@ pub fn run() -> Result<(), JsValue> {
 
     draw::canvas_draw_start(&canvas, &state)?;
     toolbar::init_toolbar(&toolbar, &canvas, &state)?;
+    generate::init_generate(&preview, &state)?;
 
     Ok(())
 }

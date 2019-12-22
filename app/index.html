@@ -30,8 +30,24 @@
         -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
         box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
       }
-      #preview {
+      .sub-main {
         width: 30%;
+        display: flex;
+        flex-direction: column;
+      }
+      #preview {
+        height: 80%;
+      }
+      #generate {
+        height: 20%;
+        width: 100%;
+        text-align: center;
+      }
+
+      .preview-img {
+        -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
+        -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
+        box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
       }
     </style>
   </head>
@@ -42,8 +58,11 @@
       </div>
 
       <div class="app-main">
-        <canvas id="draw"></canvas>
-        <div id="preview"></div>
+        <canvas id="draw" width="500" height="500"></canvas>
+        <div class="sub-main">
+          <div id="preview"></div> <!-- in img tag and preview canvas-->
+          <div id="generate"></div> <!-- in button-->
+        </div>
       </div>
     </div>
   </body>
