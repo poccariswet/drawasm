@@ -3,6 +3,7 @@ pub struct State {
     height: u32,
     pen_thin: f64,
     color: String,
+    preview_image: Vec<web_sys::ImageData>,
     undo_image_data: Vec<web_sys::ImageData>,
 }
 
@@ -12,7 +13,8 @@ impl State {
             width: w,
             height: h,
             pen_thin: 1.0,                //TODO not hardcode
-            color: "#000000".to_string(), //TODO not hardcode
+            color: "#000000".to_string(), //TODO not hardcodeA
+            preview_image: vec![],
             undo_image_data: vec![],
         }
     }
@@ -44,4 +46,12 @@ impl State {
     pub fn get_undo(&mut self) -> Option<web_sys::ImageData> {
         self.undo_image_data.pop()
     }
+
+    pub fn add_preview_image(&mut self, data: web_sys::ImageData) {
+        self.preview_image.push(data);
+    }
+
+    //pub fn delete_image(&mut self) -> Result<()> {
+
+    //}
 }
