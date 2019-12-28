@@ -3,7 +3,8 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{
-    window, CanvasRenderingContext2d, Document, Element, Event, HtmlCanvasElement, HtmlInputElement,
+    window, CanvasRenderingContext2d, Document, Element, Event, HtmlCanvasElement,
+    HtmlImageElement, HtmlInputElement,
 };
 
 use crate::state::State;
@@ -128,7 +129,13 @@ fn create_preview_image_element(
         .unwrap()
         .dyn_into::<CanvasRenderingContext2d>()
         .unwrap();
+
+    let canvas = canvas.clone();
     let state = state.clone();
+
+    //let img = document
+    //    .create_element("img")?
+    //    .dyn_into::<HtmlImageElement>()?;
 
     let handle_click = Closure::wrap(Box::new(move || {
         let image_data = context
@@ -139,8 +146,21 @@ fn create_preview_image_element(
                 state.borrow().get_height() as f64,
             )
             .unwrap();
-        console_log!("{:?}", image_data);
-        state.borrow_mut().add_preview_image(image_data);
+
+        //let buffer = wasm.apngEncodeAll(buffers, frame_speed);
+        //var blob = new Blob([buffer], {type: 'image/png'});
+        //var url = window.URL.createObjectURL(blob);
+        //var elem = document.getElementById("apng");
+        //elem.src = url;
+
+        let buffer = image_data.data().to_vec(); // Vec<u8> image data
+        console_log!("{:?}", buffer);
+
+        //  Blob new_with_u8_array_sequence_and_options
+        //  URL create_object_url_with_blob -> String
+        // img set_src URL string
+
+        state.borrow_mut().add_preview_image(buffer);
     }) as Box<dyn FnMut()>);
     element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
     handle_click.forget();

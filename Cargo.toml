@@ -35,5 +35,6 @@ features = [
   'CssStyleDeclaration',
   'ImageData',
   'HtmlInputElement',
+  'HtmlImageElement',
   'Event',
 ]
