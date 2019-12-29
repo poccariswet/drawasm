@@ -3,8 +3,8 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{
-    window, CanvasRenderingContext2d, Document, Element, Event, HtmlCanvasElement,
-    HtmlImageElement, HtmlInputElement,
+    window, Blob, BlobPropertyBag, CanvasRenderingContext2d, Document, Element, Event,
+    HtmlCanvasElement, HtmlImageElement, HtmlInputElement, Url,
 };
 
 use crate::state::State;
@@ -132,10 +132,11 @@ fn create_preview_image_element(
 
     let canvas = canvas.clone();
     let state = state.clone();
+    let preview = preview.clone();
 
-    //let img = document
-    //    .create_element("img")?
-    //    .dyn_into::<HtmlImageElement>()?;
+    let img = document
+        .create_element("img")?
+        .dyn_into::<HtmlImageElement>()?;
 
     let handle_click = Closure::wrap(Box::new(move || {
         let image_data = context
@@ -154,11 +155,24 @@ fn create_preview_image_element(
         //elem.src = url;
 
         let buffer = image_data.data().to_vec(); // Vec<u8> image data
-        console_log!("{:?}", buffer);
+                                                 //console_log!("{:?}", buffer);
 
+        let mut blob_property = BlobPropertyBag::new();
+        let array = js_sys::Uint8Array::from(buffer.as_slice());
         //  Blob new_with_u8_array_sequence_and_options
+        let blob =
+            Blob::new_with_u8_array_sequence_and_options(&array, blob_property.type_("image/png"))
+                .unwrap();
+        console_log!("{:?}", blob);
         //  URL create_object_url_with_blob -> String
+        let url = Url::create_object_url_with_blob(&blob).unwrap();
+        console_log!("{}", url);
+        let window = web_sys::window().expect("no global `window` exists");
+        //window.open_with_url(&url);
+
         // img set_src URL string
+        img.set_src(&url);
+        preview.append_child(&img);
 
         state.borrow_mut().add_preview_image(buffer);
     }) as Box<dyn FnMut()>);

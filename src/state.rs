@@ -3,7 +3,7 @@ pub struct State {
     height: u32,
     pen_thin: f64,
     color: String,
-    preview_image: Vec<Vec<u8>,
+    preview_image: Vec<Vec<u8>>,
     undo_image_data: Vec<web_sys::ImageData>,
 }
 
