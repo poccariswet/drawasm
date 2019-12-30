@@ -37,17 +37,24 @@
       }
       #preview {
         height: 80%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        overflow:auto;
+      }
+      .preview-img {
+        -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
+        -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
+        box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
+        background-color: #ffffff;
+
+        flex: 0 0 calc(33.33% - 30px);
+        margin: 5px;
       }
       #generate {
         height: 20%;
         width: 100%;
         text-align: center;
-      }
-
-      .preview-img {
-        -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
-        -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
-        box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
       }
     </style>
   </head>

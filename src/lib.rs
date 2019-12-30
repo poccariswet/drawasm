@@ -46,7 +46,7 @@ pub fn run() -> Result<(), JsValue> {
 
     // set canvas, preview dimention
     let (w, h) = get_body_dimensions(&body);
-    let (pre_w, _pre_h) = get_el_dimensions(&preview);
+    let (pre_w, _) = get_el_dimensions(&preview);
     let canvas: HtmlCanvasElement = canvas
         .dyn_into::<HtmlCanvasElement>()
         .map_err(|_| ())
@@ -57,6 +57,13 @@ pub fn run() -> Result<(), JsValue> {
 
     canvas.set_width(canvas_w);
     canvas.set_height(canvas_h);
+
+    let preview = document.get_element_by_id("preview").unwrap();
+    let (pre_w, pre_h) = get_el_dimensions(&preview);
+    preview.set_attribute(
+        "style",
+        format!("width: {}px; height: {}px;", pre_w, pre_h).as_str(),
+    );
 
     let state: Rc<RefCell<state::State>> =
         Rc::new(RefCell::new(state::State::new(canvas_w, canvas_h)));

@@ -168,27 +168,6 @@ fn create_preview_image_element(
         // img set_src URL string
         img.set_src(&url);
         img.set_attribute("class", "preview-img");
-        let preview_image_len = state.borrow().get_preview_image_len();
-        if preview_image_len == 1 {
-            img.set_attribute(
-                "style",
-                format!(
-                    "position:absolute; z-index: {}; background-color: #ffffff",
-                    preview_image_len,
-                )
-                .as_str(),
-            );
-        } else {
-            img.set_attribute(
-                "style",
-                format!(
-                    "position:absolute; top: {}px; z-index: {}; background-color: #ffffff",
-                    (preview_image_len - 1) * 100,
-                    preview_image_len,
-                )
-                .as_str(),
-            );
-        }
         img.set_width(state.borrow().get_preview_width());
         img.set_height(state.borrow().get_preview_height());
         preview.append_child(&img);
