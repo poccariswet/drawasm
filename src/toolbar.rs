@@ -38,6 +38,10 @@ pub fn init_toolbar(
     let undo = create_undo_element(&document, canvas, state)?;
     toolbar.append_child(&undo)?;
 
+    // clear
+    let clear = create_clear_element(&document, canvas, state)?;
+    toolbar.append_child(&clear)?;
+
     // preview image list
     let preview_image_list = create_preview_image_element(&document, canvas, preview, state)?;
     toolbar.append_child(&preview_image_list)?;
@@ -103,6 +107,49 @@ fn create_undo_element(
             }
             None => {}
         }
+    }) as Box<dyn FnMut()>);
+    element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
+    handle_click.forget();
+
+    Ok(element)
+}
+
+fn create_clear_element(
+    document: &Document,
+    canvas: &HtmlCanvasElement,
+    state: &Rc<RefCell<State>>,
+) -> Result<Element, JsValue> {
+    let element = document.create_element("div")?;
+    element.set_inner_html("Clear");
+    element.set_attribute(
+        "style",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b;",
+    )?;
+
+    let context = canvas
+        .get_context("2d")
+        .expect("Could not get context")
+        .unwrap()
+        .dyn_into::<CanvasRenderingContext2d>()
+        .unwrap();
+    let state = state.clone();
+
+    let handle_click = Closure::wrap(Box::new(move || {
+        let image_data = context
+            .get_image_data(
+                0.0,
+                0.0,
+                state.borrow().get_width() as f64,
+                state.borrow().get_height() as f64,
+            )
+            .unwrap();
+        state.borrow_mut().add_undo(image_data);
+        context.clear_rect(
+            0.0,
+            0.0,
+            state.borrow().get_width() as f64,
+            state.borrow().get_height() as f64,
+        );
     }) as Box<dyn FnMut()>);
     element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
     handle_click.forget();
