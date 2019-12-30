@@ -133,12 +133,15 @@ fn create_preview_image_element(
     let canvas = canvas.clone();
     let state = state.clone();
     let preview = preview.clone();
-
-    let img = document
-        .create_element("img")?
-        .dyn_into::<HtmlImageElement>()?;
+    let document_copy = document.clone();
 
     let handle_click = Closure::wrap(Box::new(move || {
+        let img = document_copy
+            .create_element("img")
+            .unwrap()
+            .dyn_into::<HtmlImageElement>()
+            .unwrap();
+
         let image_data = context
             .get_image_data(
                 0.0,
@@ -148,33 +151,47 @@ fn create_preview_image_element(
             )
             .unwrap();
 
-        //let buffer = wasm.apngEncodeAll(buffers, frame_speed);
-        //var blob = new Blob([buffer], {type: 'image/png'});
-        //var url = window.URL.createObjectURL(blob);
-        //var elem = document.getElementById("apng");
-        //elem.src = url;
-
         let buffer = image_data.data().to_vec(); // Vec<u8> image data
-                                                 //console_log!("{:?}", buffer);
+        state.borrow_mut().add_preview_image(buffer);
 
-        let mut blob_property = BlobPropertyBag::new();
-        let array = js_sys::Uint8Array::from(buffer.as_slice());
-        //  Blob new_with_u8_array_sequence_and_options
-        let blob =
-            Blob::new_with_u8_array_sequence_and_options(&array, blob_property.type_("image/png"))
-                .unwrap();
-        console_log!("{:?}", blob);
-        //  URL create_object_url_with_blob -> String
-        let url = Url::create_object_url_with_blob(&blob).unwrap();
-        console_log!("{}", url);
-        let window = web_sys::window().expect("no global `window` exists");
-        //window.open_with_url(&url);
+        //let mut blob_property = BlobPropertyBag::new();
+        //let array = js_sys::Uint8Array::from(buffer.as_slice());
+        //let blob =
+        //    Blob::new_with_u8_array_sequence_and_options(&array, blob_property.type_("image/png"))
+        //        .unwrap();
+        //console_log!("{:?}", blob);
+        //let url = Url::create_object_url_with_blob(&blob).unwrap();
+        //console_log!("{}", url);
+
+        let url = canvas.to_data_url_with_type("image/png").unwrap();
 
         // img set_src URL string
         img.set_src(&url);
+        img.set_attribute("class", "preview-img");
+        let preview_image_len = state.borrow().get_preview_image_len();
+        if preview_image_len == 1 {
+            img.set_attribute(
+                "style",
+                format!(
+                    "position:absolute; z-index: {}; background-color: #ffffff",
+                    preview_image_len,
+                )
+                .as_str(),
+            );
+        } else {
+            img.set_attribute(
+                "style",
+                format!(
+                    "position:absolute; top: {}px; z-index: {}; background-color: #ffffff",
+                    (preview_image_len - 1) * 100,
+                    preview_image_len,
+                )
+                .as_str(),
+            );
+        }
+        img.set_width(state.borrow().get_preview_width());
+        img.set_height(state.borrow().get_preview_height());
         preview.append_child(&img);
-
-        state.borrow_mut().add_preview_image(buffer);
     }) as Box<dyn FnMut()>);
     element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
     handle_click.forget();

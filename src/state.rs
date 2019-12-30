@@ -1,6 +1,8 @@
 pub struct State {
     width: u32,
     height: u32,
+    preview_w: u32,
+    preview_h: u32,
     pen_thin: f64,
     color: String,
     preview_image: Vec<Vec<u8>>,
@@ -12,6 +14,8 @@ impl State {
         State {
             width: w,
             height: h,
+            preview_w: w / 5,
+            preview_h: h / 5,
             pen_thin: 1.0,                //TODO not hardcode
             color: "#000000".to_string(), //TODO not hardcode
             preview_image: vec![],
@@ -39,6 +43,14 @@ impl State {
         self.height
     }
 
+    pub fn get_preview_width(&self) -> u32 {
+        self.preview_w
+    }
+
+    pub fn get_preview_height(&self) -> u32 {
+        self.preview_h
+    }
+
     pub fn add_undo(&mut self, data: web_sys::ImageData) {
         self.undo_image_data.push(data);
     }
@@ -49,6 +61,10 @@ impl State {
 
     pub fn add_preview_image(&mut self, data: Vec<u8>) {
         self.preview_image.push(data);
+    }
+
+    pub fn get_preview_image_len(&self) -> usize {
+        self.preview_image.len()
     }
 
     //pub fn delete_image(&mut self) -> Result<()> {
