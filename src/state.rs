@@ -5,7 +5,7 @@ pub struct State {
     preview_h: u32,
     pen_thin: f64,
     color: String,
-    preview_image: Vec<Vec<u8>>,
+    preview_image: Vec<String>,
     undo_image_data: Vec<web_sys::ImageData>,
 }
 
@@ -59,8 +59,12 @@ impl State {
         self.undo_image_data.pop()
     }
 
-    pub fn add_preview_image(&mut self, data: Vec<u8>) {
+    pub fn add_preview_image(&mut self, data: String) {
         self.preview_image.push(data);
+    }
+
+    pub fn get_preview_image(&self) -> Vec<String> {
+        self.preview_image.clone()
     }
 
     pub fn get_preview_image_len(&self) -> usize {

@@ -63,7 +63,7 @@ pub fn run() -> Result<(), JsValue> {
     preview.set_attribute(
         "style",
         format!("width: {}px; height: {}px;", pre_w, pre_h).as_str(),
-    );
+    )?;
 
     let state: Rc<RefCell<state::State>> =
         Rc::new(RefCell::new(state::State::new(canvas_w, canvas_h)));

@@ -3,8 +3,8 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{
-    window, Blob, BlobPropertyBag, CanvasRenderingContext2d, Document, Element, Event,
-    HtmlCanvasElement, HtmlImageElement, HtmlInputElement, Url,
+    window, CanvasRenderingContext2d, Document, Element, Event, HtmlCanvasElement,
+    HtmlImageElement, HtmlInputElement,
 };
 
 use crate::state::State;
@@ -189,17 +189,17 @@ fn create_preview_image_element(
             .dyn_into::<HtmlImageElement>()
             .unwrap();
 
-        let image_data = context
-            .get_image_data(
-                0.0,
-                0.0,
-                state.borrow().get_width() as f64,
-                state.borrow().get_height() as f64,
-            )
-            .unwrap();
+        //let image_data = context
+        //    .get_image_data(
+        //        0.0,
+        //        0.0,
+        //        state.borrow().get_width() as f64,
+        //        state.borrow().get_height() as f64,
+        //    )
+        //    .unwrap();
 
-        let buffer = image_data.data().to_vec(); // Vec<u8> image data
-        state.borrow_mut().add_preview_image(buffer);
+        //let buffer = image_data.data().buffer(); // Vec<u8> image data
+        //state.borrow_mut().add_preview_image(buffer.to_vec());
 
         //let mut blob_property = BlobPropertyBag::new();
         //let array = js_sys::Uint8Array::from(buffer.as_slice());
@@ -211,13 +211,14 @@ fn create_preview_image_element(
         //console_log!("{}", url);
 
         let url = canvas.to_data_url_with_type("image/png").unwrap();
+        state.borrow_mut().add_preview_image(url.clone());
 
         // img set_src URL string
         img.set_src(&url);
-        img.set_attribute("class", "preview-img");
+        img.set_attribute("class", "preview-img").unwrap();
         img.set_width(state.borrow().get_preview_width());
         img.set_height(state.borrow().get_preview_height());
-        preview.append_child(&img);
+        preview.append_child(&img).unwrap();
     }) as Box<dyn FnMut()>);
     element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
     handle_click.forget();
