@@ -70,7 +70,7 @@ pub fn run() -> Result<(), JsValue> {
 
     draw::canvas_draw_start(&canvas, &state)?;
     toolbar::init_toolbar(&toolbar, &canvas, &preview, &state)?;
-    generate::init_generate(&preview, &state)?;
+    generate::init_generate(&state)?;
 
     Ok(())
 }

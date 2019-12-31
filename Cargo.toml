@@ -37,6 +37,7 @@ features = [
   'ImageData',
   'HtmlInputElement',
   'HtmlImageElement',
+  'HtmlButtonElement',
   'Event',
   'Blob',
   'BlobPropertyBag',
