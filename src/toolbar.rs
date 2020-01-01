@@ -9,16 +9,6 @@ use web_sys::{
 
 use crate::state::State;
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(msg: &str);
-}
-
-macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
-
 pub fn init_toolbar(
     toolbar: &Element,
     canvas: &HtmlCanvasElement,
@@ -79,8 +69,8 @@ fn create_pen_thin_element(
             thin + 2.0
         )
         .as_str(),
-    );
-    element.append_child(&inner_element);
+    )?;
+    element.append_child(&inner_element)?;
 
     let state = state.clone();
 
@@ -215,13 +205,6 @@ fn create_preview_image_element(
         "style",
         "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b;",
     )?;
-
-    let context = canvas
-        .get_context("2d")
-        .expect("Could not get context")
-        .unwrap()
-        .dyn_into::<CanvasRenderingContext2d>()
-        .unwrap();
 
     let canvas = canvas.clone();
     let state = state.clone();

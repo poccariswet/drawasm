@@ -1,4 +1,5 @@
 use std::cell::RefCell;
+use std::cmp::{max, min};
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -17,16 +18,6 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 #[wasm_bindgen(start)]
 pub fn initialize() {
     utils::set_panic_hook();
-}
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(msg: &str);
-}
-
-macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 
 static TOOLBAR_HEIGHT: u32 = 50;
@@ -76,14 +67,14 @@ pub fn run() -> Result<(), JsValue> {
 }
 
 fn get_el_dimensions(el: &Element) -> (u32, u32) {
-    let width = el.client_width() as u32;
-    let height = el.client_height() as u32;
+    let width = min(max(el.client_width() as u32, 250), 1500);
+    let height = min(max(el.client_height() as u32, 450), 1800);
 
     (width, height)
 }
 fn get_body_dimensions(body: &HtmlElement) -> (u32, u32) {
-    let width = body.client_width() as u32;
-    let height = body.client_height() as u32;
+    let width = min(max(body.client_width() as u32, 600), 3000);
+    let height = min(max(body.client_height() as u32, 400), 2000);
 
     (width, height)
 }

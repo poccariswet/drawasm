@@ -6,10 +6,7 @@ use std::io::BufWriter;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::{
-    window, Blob, BlobPropertyBag, CanvasRenderingContext2d, Document, Element, Event,
-    HtmlButtonElement, HtmlCanvasElement, HtmlInputElement, Url,
-};
+use web_sys::{window, Blob, BlobPropertyBag, Document, HtmlButtonElement, Url};
 
 use crate::state::State;
 
@@ -98,7 +95,7 @@ fn create_generate_button(
         .unwrap();
         let url = Url::create_object_url_with_blob(&blob).unwrap();
         let window = window().unwrap();
-        window.open_with_url(&url);
+        window.open_with_url(&url).unwrap();
     }) as Box<dyn FnMut()>);
 
     button.set_onclick(Some(handle_click.as_ref().unchecked_ref()));
