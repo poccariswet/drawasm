@@ -55,12 +55,13 @@ fn create_generate_button(
         }
 
         let preview_images = state.borrow().get_preview_image();
-        let frame_speed = 3.3; //TODO: not hardcode
+        let frame_speed = 0.33; //TODO: not hardcode
 
         let mut png_images: Vec<PNGImage> = Vec::new();
         for data in preview_images {
-            let v: Vec<&str> = data.split(',').collect();
-            let buffer = base64::decode(&v[1]).unwrap();
+            let v = data.to_string().replace("data:image/png;base64,", "");
+
+            let buffer = base64::decode(&v).unwrap();
             let img =
                 image::load_from_memory_with_format(&buffer, image::ImageFormat::PNG).unwrap();
             png_images.push(apng::load_dynamic_image(img).unwrap());
@@ -86,12 +87,15 @@ fn create_generate_button(
                 Err(err) => console_log!("{}", err),
             }
         }
-        console_log!("{:?}", buf);
-        let mut blob_property = BlobPropertyBag::new();
-        let array = js_sys::Uint8Array::from(buf.as_slice());
-        let blob =
-            Blob::new_with_u8_array_sequence_and_options(&array, blob_property.type_("image/png"))
-                .unwrap();
+
+        let b = js_sys::Uint8Array::new(&unsafe { js_sys::Uint8Array::view(&buf) }.into());
+        let array = js_sys::Array::new();
+        array.push(&b.buffer());
+        let blob = Blob::new_with_u8_array_sequence_and_options(
+            &array,
+            BlobPropertyBag::new().type_("image/png"),
+        )
+        .unwrap();
         let url = Url::create_object_url_with_blob(&blob).unwrap();
         let window = window().unwrap();
         window.open_with_url(&url);

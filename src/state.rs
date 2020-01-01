@@ -71,6 +71,7 @@ impl State {
         self.preview_image.len()
     }
 
+    // TODO
     //pub fn delete_image(&mut self) -> Result<()> {
 
     //}

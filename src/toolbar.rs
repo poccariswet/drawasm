@@ -189,27 +189,6 @@ fn create_preview_image_element(
             .dyn_into::<HtmlImageElement>()
             .unwrap();
 
-        //let image_data = context
-        //    .get_image_data(
-        //        0.0,
-        //        0.0,
-        //        state.borrow().get_width() as f64,
-        //        state.borrow().get_height() as f64,
-        //    )
-        //    .unwrap();
-
-        //let buffer = image_data.data().buffer(); // Vec<u8> image data
-        //state.borrow_mut().add_preview_image(buffer.to_vec());
-
-        //let mut blob_property = BlobPropertyBag::new();
-        //let array = js_sys::Uint8Array::from(buffer.as_slice());
-        //let blob =
-        //    Blob::new_with_u8_array_sequence_and_options(&array, blob_property.type_("image/png"))
-        //        .unwrap();
-        //console_log!("{:?}", blob);
-        //let url = Url::create_object_url_with_blob(&blob).unwrap();
-        //console_log!("{}", url);
-
         let url = canvas.to_data_url_with_type("image/png").unwrap();
         state.borrow_mut().add_preview_image(url.clone());
 
