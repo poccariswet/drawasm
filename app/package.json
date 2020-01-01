@@ -1,7 +1,7 @@
 {
-  "name": "drawing-wasm-web",
+  "name": "drawasm",
   "version": "0.1.0",
-  "description": "drawing-wasm-web",
+  "description": "drawing a picture on wasm",
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",

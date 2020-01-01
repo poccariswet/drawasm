@@ -35,6 +35,10 @@ impl State {
         self.pen_thin
     }
 
+    pub fn set_pen_thin(&mut self, pen_thin: f64) {
+        self.pen_thin = pen_thin;
+    }
+
     pub fn get_width(&self) -> u32 {
         self.width
     }

@@ -42,11 +42,57 @@ pub fn init_toolbar(
     let clear = create_clear_element(&document, canvas, state)?;
     toolbar.append_child(&clear)?;
 
+    // pen thin
+    for thin in PEN_THIN.iter() {
+        let pen_thin = create_pen_thin_element(*thin, &document, state)?;
+        toolbar.append_child(&pen_thin)?;
+    }
+
     // preview image list
     let preview_image_list = create_preview_image_element(&document, canvas, preview, state)?;
     toolbar.append_child(&preview_image_list)?;
 
     Ok(())
+}
+
+static PEN_THIN: [f64; 5] = [1.0, 2.0, 4.0, 8.0, 10.0];
+
+fn create_pen_thin_element(
+    thin: f64,
+    document: &Document,
+    state: &Rc<RefCell<State>>,
+) -> Result<Element, JsValue> {
+    let element = document.create_element("div")?;
+
+    element.set_attribute(
+        "style",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b;",
+    )?;
+
+    let inner_element = document.create_element("div")?;
+
+    inner_element.set_attribute(
+        "style",
+        format!(
+            "border-radius: 50%; background-color: black; width: {}px; height: {}px;",
+            thin + 2.0,
+            thin + 2.0
+        )
+        .as_str(),
+    );
+    element.append_child(&inner_element);
+
+    let state = state.clone();
+
+    let handle_click = Closure::wrap(Box::new(move || {
+        state.borrow_mut().set_pen_thin(thin);
+    }) as Box<dyn FnMut()>);
+
+    element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
+
+    handle_click.forget();
+
+    Ok(element)
 }
 
 fn create_color_picker(

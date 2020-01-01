@@ -8,6 +8,7 @@ html, body {height: 100%; width:100%; margin: 0; background-color: #ebebf0}
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: flex-start;
+    user-select: none;
 
     height: 100%;
 }
@@ -20,6 +21,7 @@ html, body {height: 100%; width:100%; margin: 0; background-color: #ebebf0}
   background-color: #ffffff;
   margin: 3px;
   position:relative;
+  cursor: crosshair;
   -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
   -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
   box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
@@ -93,4 +95,11 @@ button, a {
   box-shadow: 2px 0 0 0 #0B44EF, 2px 2px 0 0 #0B44EF, 0 2px 0 0 #0B44EF;
   transition-duration: 0.1s;
   transform: translate(4px, 4px);
+}
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
 }
