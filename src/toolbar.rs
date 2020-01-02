@@ -45,7 +45,7 @@ pub fn init_toolbar(
     Ok(())
 }
 
-static PEN_THIN: [f64; 5] = [1.0, 2.0, 4.0, 8.0, 10.0];
+static PEN_THIN: [f64; 5] = [1.0, 4.0, 8.0, 10.0, 15.0];
 
 fn create_pen_thin_element(
     thin: f64,

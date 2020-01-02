@@ -6,7 +6,10 @@ use std::io::BufWriter;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::{window, Blob, BlobPropertyBag, Document, HtmlButtonElement, Url};
+use web_sys::{
+    window, Blob, BlobPropertyBag, Document, Element, Event, HtmlButtonElement, HtmlInputElement,
+    Url,
+};
 
 use crate::state::State;
 
@@ -29,9 +32,64 @@ pub fn init_generate(state: &Rc<RefCell<State>>) -> Result<(), JsValue> {
 
     let generate = document.get_element_by_id("generate").unwrap();
 
+    let slider = create_frame_speed_slider(&document, state)?;
+    generate.append_child(&slider)?;
+
     let button = create_generate_button(&document, state)?;
     generate.append_child(&button)?;
     Ok(())
+}
+
+fn create_frame_speed_slider(
+    document: &Document,
+    state: &Rc<RefCell<State>>,
+) -> Result<Element, JsValue> {
+    let div = document.create_element("div")?;
+    div.set_attribute("style", "width: 80%; text-align: center;")?;
+    div.set_inner_html("frame speed: ");
+
+    let element = document.create_element("div")?;
+    element.set_attribute("class", "slider-frame-speed")?;
+    element.set_attribute(
+        "style",
+        "display: flex; flex-direction: row; align-items: center;",
+    )?;
+
+    let slider = document
+        .create_element("input")?
+        .dyn_into::<HtmlInputElement>()?;
+
+    let val = document.create_element("strong")?;
+    val.set_inner_html(format!("{}", state.borrow().get_frame_speed()).as_str());
+
+    // set slider attribute
+    slider.set_attribute("class", "slider")?;
+    slider.set_attribute("type", "range")?;
+    slider.set_attribute("min", "0.01")?;
+    slider.set_attribute("max", "1")?;
+    slider.set_attribute("step", "0.01")?;
+    slider.set_attribute(
+        "value",
+        format!("{}", state.borrow().get_frame_speed()).as_str(),
+    )?;
+
+    let state = state.clone();
+    let val_clone = val.clone();
+    let handle_input = Closure::wrap(Box::new(move |e: Event| {
+        let target = e.target().unwrap().dyn_into::<HtmlInputElement>().unwrap();
+        let frame_speed = target.value();
+        val_clone.set_inner_html(&frame_speed);
+        let frame_speed: f64 = frame_speed.parse().unwrap();
+        state.borrow_mut().set_frame_speed(frame_speed);
+    }) as Box<dyn FnMut(_)>);
+
+    slider.add_event_listener_with_callback("input", handle_input.as_ref().unchecked_ref())?;
+    handle_input.forget();
+    element.append_child(&slider)?;
+    div.append_child(&val)?;
+    div.append_child(&element)?;
+
+    Ok(div)
 }
 
 fn create_generate_button(
@@ -52,7 +110,6 @@ fn create_generate_button(
         }
 
         let preview_images = state.borrow().get_preview_image();
-        let frame_speed = 0.33; //TODO: not hardcode
 
         let mut png_images: Vec<PNGImage> = Vec::new();
         for data in preview_images {
@@ -70,6 +127,9 @@ fn create_generate_button(
 
             let config = apng::create_config(&png_images, None).unwrap();
             let mut encoder = Encoder::new(&mut buf_writer, config).unwrap();
+
+            // calculate frame speed
+            let frame_speed = state.borrow().get_frame_speed();
             let d_num = frame_speed * (100 as f64);
             let d_den = 100;
 
