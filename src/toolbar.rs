@@ -24,6 +24,20 @@ pub fn init_toolbar(
     let color_pick = create_color_picker(&document, state)?;
     toolbar.append_child(&color_pick)?;
 
+    // pen
+    let pen = create_pen_element(&document, canvas)?;
+    toolbar.append_child(&pen)?;
+
+    // eraser
+    let eraser = create_eraser_element(&document, canvas)?;
+    toolbar.append_child(&eraser)?;
+
+    // pen thin
+    for thin in PEN_THIN.iter() {
+        let pen_thin = create_pen_thin_element(*thin, &document, state)?;
+        toolbar.append_child(&pen_thin)?;
+    }
+
     // undo
     let undo = create_undo_element(&document, canvas, state)?;
     toolbar.append_child(&undo)?;
@@ -32,13 +46,7 @@ pub fn init_toolbar(
     let clear = create_clear_element(&document, canvas, state)?;
     toolbar.append_child(&clear)?;
 
-    // pen thin
-    for thin in PEN_THIN.iter() {
-        let pen_thin = create_pen_thin_element(*thin, &document, state)?;
-        toolbar.append_child(&pen_thin)?;
-    }
-
-    // preview image list
+    // add preview
     let preview_image_list = create_preview_image_element(&document, canvas, preview, state)?;
     toolbar.append_child(&preview_image_list)?;
 
@@ -85,6 +93,63 @@ fn create_pen_thin_element(
     Ok(element)
 }
 
+fn create_pen_element(document: &Document, canvas: &HtmlCanvasElement) -> Result<Element, JsValue> {
+    let element = document.create_element("div")?;
+    element.set_attribute(
+        "style",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b; background-image:url(https://image.flaticon.com/icons/svg/760/760400.svg); background-size: 100%;",
+    )?;
+
+    let context = canvas
+        .get_context("2d")
+        .expect("Could not get context")
+        .unwrap()
+        .dyn_into::<CanvasRenderingContext2d>()
+        .unwrap();
+
+    let handle_click = Closure::wrap(Box::new(move || {
+        context
+            .set_global_composite_operation("source-over")
+            .unwrap();
+    }) as Box<dyn FnMut()>);
+
+    element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
+
+    handle_click.forget();
+
+    Ok(element)
+}
+
+fn create_eraser_element(
+    document: &Document,
+    canvas: &HtmlCanvasElement,
+) -> Result<Element, JsValue> {
+    let element = document.create_element("div")?;
+    element.set_attribute(
+        "style",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b; background-image:url(https://image.flaticon.com/icons/svg/200/200404.svg); background-size: 100%;",
+    )?;
+
+    let context = canvas
+        .get_context("2d")
+        .expect("Could not get context")
+        .unwrap()
+        .dyn_into::<CanvasRenderingContext2d>()
+        .unwrap();
+
+    let handle_click = Closure::wrap(Box::new(move || {
+        context
+            .set_global_composite_operation("destination-out")
+            .unwrap();
+    }) as Box<dyn FnMut()>);
+
+    element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
+
+    handle_click.forget();
+
+    Ok(element)
+}
+
 fn create_color_picker(
     document: &Document,
     state: &Rc<RefCell<State>>,
@@ -121,10 +186,9 @@ fn create_undo_element(
     state: &Rc<RefCell<State>>,
 ) -> Result<Element, JsValue> {
     let element = document.create_element("div")?;
-    element.set_inner_html("Undo");
     element.set_attribute(
         "style",
-        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b;",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b; background-image:url(https://image.flaticon.com/icons/svg/318/318262.svg); background-size: 100%;",
     )?;
 
     let context = canvas
@@ -200,10 +264,9 @@ fn create_preview_image_element(
     state: &Rc<RefCell<State>>,
 ) -> Result<Element, JsValue> {
     let element = document.create_element("div")?;
-    element.set_inner_html("add");
     element.set_attribute(
         "style",
-        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b;",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b; background-image:url(https://image.flaticon.com/icons/svg/1562/1562881.svg); background-size: 100%;",
     )?;
 
     let canvas = canvas.clone();
