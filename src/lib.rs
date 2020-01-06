@@ -32,7 +32,6 @@ pub fn run() -> Result<(), JsValue> {
     let body = document.body().expect("Could not find `body` element");
     let toolbar = document.get_element_by_id("toolbar").unwrap();
     let preview = document.get_element_by_id("preview").unwrap();
-    //preview.set_inner_html("preview");
     let canvas = document.get_element_by_id("draw").unwrap();
 
     // set canvas, preview dimention
@@ -55,6 +54,8 @@ pub fn run() -> Result<(), JsValue> {
         "style",
         format!("width: {}px; height: {}px;", pre_w, pre_h).as_str(),
     )?;
+
+    toolbar.set_attribute("style", format!("width: {}px;", canvas_w + 5).as_str())?;
 
     let state: Rc<RefCell<state::State>> =
         Rc::new(RefCell::new(state::State::new(canvas_w, canvas_h)));

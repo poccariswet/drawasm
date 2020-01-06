@@ -3,11 +3,29 @@ html, body {height: 100%; width:100%; margin: 0; background-color: #ebebf0}
   display: flex;
   flex-direction: column;
 }
+#toolbars {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    user-select: none;
+
+    height: 100%;
+}
 #toolbar {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: flex-start;
+    user-select: none;
+
+    height: 100%;
+}
+#preview-toolbar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
     user-select: none;
 
     height: 100%;

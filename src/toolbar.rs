@@ -46,9 +46,15 @@ pub fn init_toolbar(
     let clear = create_clear_element(&document, canvas, state)?;
     toolbar.append_child(&clear)?;
 
+    let preview_toolbar = document.get_element_by_id("preview-toolbar").unwrap();
+
     // add preview
     let preview_image_list = create_preview_image_element(&document, canvas, preview, state)?;
-    toolbar.append_child(&preview_image_list)?;
+    preview_toolbar.append_child(&preview_image_list)?;
+
+    // clear all preview list
+    let preview_clear = create_preview_clear_element(&document, &preview, state)?;
+    preview_toolbar.append_child(&preview_clear)?;
 
     Ok(())
 }
@@ -220,10 +226,9 @@ fn create_clear_element(
     state: &Rc<RefCell<State>>,
 ) -> Result<Element, JsValue> {
     let element = document.create_element("div")?;
-    element.set_inner_html("Clear");
     element.set_attribute(
         "style",
-        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b;",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b; background-image:url(https://image.flaticon.com/icons/svg/35/35480.svg); background-size: 100%;",
     )?;
 
     let context = canvas
@@ -266,7 +271,7 @@ fn create_preview_image_element(
     let element = document.create_element("div")?;
     element.set_attribute(
         "style",
-        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b; background-image:url(https://image.flaticon.com/icons/svg/1562/1562881.svg); background-size: 100%;",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; background-image:url(https://image.flaticon.com/icons/svg/1562/1562881.svg); background-size: 100%;",
     )?;
 
     let canvas = canvas.clone();
@@ -290,6 +295,42 @@ fn create_preview_image_element(
         img.set_width(state.borrow().get_preview_width());
         img.set_height(state.borrow().get_preview_height());
         preview.append_child(&img).unwrap();
+    }) as Box<dyn FnMut()>);
+    element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
+    handle_click.forget();
+
+    Ok(element)
+}
+
+fn create_preview_clear_element(
+    document: &Document,
+    preview: &Element,
+    state: &Rc<RefCell<State>>,
+) -> Result<Element, JsValue> {
+    let element = document.create_element("div")?;
+    element.set_attribute(
+        "style",
+        "height: 50px; width: 50px; margin-left: 1em; display: flex; align-items: center; justify-content: center; background-image:url(https://image.flaticon.com/icons/svg/1276/1276490.svg); background-size: 100%;",
+    )?;
+
+    let state = state.clone();
+    let preview = preview.clone();
+
+    let handle_click = Closure::wrap(Box::new(move || {
+        let mut child_has = true;
+        while child_has {
+            let mut i = preview.child_nodes().length() - 1;
+            match preview.child_nodes().item(i) {
+                Some(v) => {
+                    preview.remove_child(&v).unwrap();
+                }
+                None => {
+                    child_has = false;
+                }
+            }
+            i -= 1;
+        }
+        state.borrow_mut().delete_all_images();
     }) as Box<dyn FnMut()>);
     element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
     handle_click.forget();

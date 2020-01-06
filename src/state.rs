@@ -82,6 +82,10 @@ impl State {
 
     //}
 
+    pub fn delete_all_images(&mut self) {
+        self.preview_image = vec![];
+    }
+
     pub fn get_frame_speed(&self) -> f64 {
         self.frame_speed
     }

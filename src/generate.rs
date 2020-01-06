@@ -37,6 +37,7 @@ pub fn init_generate(state: &Rc<RefCell<State>>) -> Result<(), JsValue> {
 
     let button = create_generate_button(&document, state)?;
     generate.append_child(&button)?;
+
     Ok(())
 }
 
