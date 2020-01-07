@@ -6,7 +6,7 @@ https://drawasm.netlify.com/
 
 |drawasm(https://drawasm.netlify.com)|generated APNG|
 |---|---|
-|<img src="https://i.gyazo.com/8b24757d5ae49ad926131d18b3cb3f20.png" width="500">|<img src="https://i.gyazo.com/868ab96c4fc84eae5edff390a21aeaa8.png" width="500">|
+|<img src="https://i.gyazo.com/2f3dd43bf7afcd0064649e61a4704c81.png" width="500">|<img src="https://i.gyazo.com/51f8f8c53753a515bbe5a00922b2fe6f.png" width="500">|
 
 
 ## Reference
