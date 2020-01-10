@@ -23,29 +23,28 @@ pub fn canvas_draw_start(
 
     // mousedown
     {
-        let context_copy = context.clone();
-        // let canvas_copy = canvas.clone();
-        let state_copy = state.clone();
+        let context = context.clone();
+        let state = state.clone();
         let pressed = pressed.clone();
 
         let mouse_down = Closure::wrap(Box::new(move |event: MouseEvent| {
             pressed.set(true);
-            let image_data = context_copy
+            let image_data = context
                 .get_image_data(
                     0.0,
                     0.0,
-                    state_copy.borrow().get_width() as f64,
-                    state_copy.borrow().get_height() as f64,
+                    state.borrow().get_width() as f64,
+                    state.borrow().get_height() as f64,
                 )
                 .unwrap();
-            state_copy.borrow_mut().add_undo(image_data);
+            state.borrow_mut().add_undo(image_data);
 
             let new_x = event.offset_x() as f64;
             let new_y = event.offset_y() as f64;
-            context_copy.begin_path();
-            context_copy.set_stroke_style(&JsValue::from(state_copy.borrow().get_color()));
-            context_copy.set_line_width(state_copy.borrow().get_pen_thin());
-            context_copy.move_to(new_x, new_y);
+            context.begin_path();
+            context.set_stroke_style(&JsValue::from(state.borrow().get_color()));
+            context.set_line_width(state.borrow().get_pen_thin());
+            context.move_to(new_x, new_y);
         }) as Box<dyn FnMut(_)>);
 
         canvas
@@ -56,16 +55,16 @@ pub fn canvas_draw_start(
 
     // mouseup
     {
-        let context_copy = context.clone();
+        let context = context.clone();
         let pressed = pressed.clone();
 
         let mouse_up = Closure::wrap(Box::new(move |event: MouseEvent| {
             pressed.set(false);
             let new_x = event.offset_x() as f64;
             let new_y = event.offset_y() as f64;
-            context_copy.fill_rect(new_x, new_y, 1.0, 1.0);
-            context_copy.line_to(new_x, new_y);
-            context_copy.stroke();
+            context.fill_rect(new_x, new_y, 1.0, 1.0);
+            context.line_to(new_x, new_y);
+            context.stroke();
         }) as Box<dyn FnMut(_)>);
 
         canvas.add_event_listener_with_callback("mouseup", mouse_up.as_ref().unchecked_ref())?;
@@ -75,15 +74,15 @@ pub fn canvas_draw_start(
 
     // mousemove
     {
-        let context_copy = context.clone();
+        let context = context.clone();
         let pressed = pressed.clone();
 
         let mouse_move = Closure::wrap(Box::new(move |event: MouseEvent| {
             if pressed.get() {
                 let new_x = event.offset_x() as f64;
                 let new_y = event.offset_y() as f64;
-                context_copy.line_to(new_x, new_y);
-                context_copy.stroke();
+                context.line_to(new_x, new_y);
+                context.stroke();
             }
         }) as Box<dyn FnMut(_)>);
 
