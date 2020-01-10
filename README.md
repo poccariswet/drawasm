@@ -2,7 +2,7 @@
 
 This web app is generating APNG by drawing picture on canvas.
 
-https://drawasm.netlify.com/
+Please try it here https://drawasm.netlify.com/
 
 |drawasm(https://drawasm.netlify.com)|generated APNG|
 |---|---|
