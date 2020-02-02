@@ -42,6 +42,10 @@ pub fn init_toolbar(
     let undo = create_undo_element(&document, canvas, state)?;
     toolbar.append_child(&undo)?;
 
+    // redo
+    let redo = create_redo_element(&document, canvas, state)?;
+    toolbar.append_child(&redo)?;
+
     // clear
     let clear = create_clear_element(&document, canvas, state)?;
     toolbar.append_child(&clear)?;
@@ -194,7 +198,7 @@ fn create_undo_element(
     let element = document.create_element("div")?;
     element.set_attribute(
         "style",
-        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b; background-image:url(https://image.flaticon.com/icons/svg/318/318262.svg); background-size: 100%;",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b; background-image:url(https://image.flaticon.com/icons/svg/1/1453.svg); background-size: 100%;",
     )?;
 
     let context = canvas
@@ -209,7 +213,59 @@ fn create_undo_element(
         let undo = state.borrow_mut().get_undo();
         match undo {
             Some(u) => {
+                let image_data = context
+                    .get_image_data(
+                        0.0,
+                        0.0,
+                        state.borrow().get_width() as f64,
+                        state.borrow().get_height() as f64,
+                    )
+                    .unwrap();
+                state.borrow_mut().add_redo(image_data);
                 context.put_image_data(&u, 0.0, 0.0).unwrap();
+            }
+            None => {}
+        }
+    }) as Box<dyn FnMut()>);
+    element.add_event_listener_with_callback("click", handle_click.as_ref().unchecked_ref())?;
+    handle_click.forget();
+
+    Ok(element)
+}
+
+fn create_redo_element(
+    document: &Document,
+    canvas: &HtmlCanvasElement,
+    state: &Rc<RefCell<State>>,
+) -> Result<Element, JsValue> {
+    let element = document.create_element("div")?;
+    element.set_attribute(
+        "style",
+        "height: 50px; width: 50px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 1px solid #9b9b9b; background-image:url(https://image.flaticon.com/icons/svg/74/74474.svg); background-size: 100%;",
+    )?;
+
+    let context = canvas
+        .get_context("2d")
+        .expect("Could not get context")
+        .unwrap()
+        .dyn_into::<CanvasRenderingContext2d>()
+        .unwrap();
+    let state = state.clone();
+
+    let handle_click = Closure::wrap(Box::new(move || {
+        let redo = state.borrow_mut().get_redo();
+        match redo {
+            Some(r) => {
+                let image_data = context
+                    .get_image_data(
+                        0.0,
+                        0.0,
+                        state.borrow().get_width() as f64,
+                        state.borrow().get_height() as f64,
+                    )
+                    .unwrap();
+                state.borrow_mut().add_undo(image_data);
+                context.put_image_data(&r, 0.0, 0.0).unwrap();
             }
             None => {}
         }

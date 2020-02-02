@@ -7,6 +7,7 @@ pub struct State {
     color: String,
     preview_image: Vec<String>,
     undo_image_data: Vec<web_sys::ImageData>,
+    redo_image_data: Vec<web_sys::ImageData>,
     frame_speed: f64,
 }
 
@@ -21,6 +22,7 @@ impl State {
             color: "#000000".to_string(), //TODO not hardcode
             preview_image: vec![],
             undo_image_data: vec![],
+            redo_image_data: vec![],
             frame_speed: 0.33,
         }
     }
@@ -63,6 +65,14 @@ impl State {
 
     pub fn get_undo(&mut self) -> Option<web_sys::ImageData> {
         self.undo_image_data.pop()
+    }
+
+    pub fn add_redo(&mut self, data: web_sys::ImageData) {
+        self.redo_image_data.push(data);
+    }
+
+    pub fn get_redo(&mut self) -> Option<web_sys::ImageData> {
+        self.redo_image_data.pop()
     }
 
     pub fn add_preview_image(&mut self, data: String) {
